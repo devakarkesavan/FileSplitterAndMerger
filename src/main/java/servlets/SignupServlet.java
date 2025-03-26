@@ -28,7 +28,6 @@ public class SignupServlet extends HttpServlet {
         try {
             conn = DBConnection.getConnection();
 
-            // Check if user already exists
             String checkUser = "SELECT * FROM users WHERE email = ?";
             pstmt = conn.prepareStatement(checkUser);
             pstmt.setString(1, email);
@@ -40,10 +39,8 @@ public class SignupServlet extends HttpServlet {
                 return;
             }
 
-            // Start transaction
             conn.setAutoCommit(false);
 
-            // Insert into users table
             String insertUser = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
             pstmt = conn.prepareStatement(insertUser, Statement.RETURN_GENERATED_KEYS);
             pstmt.setString(1, username);
@@ -51,24 +48,20 @@ public class SignupServlet extends HttpServlet {
             pstmt.setString(3, password);
             pstmt.executeUpdate();
 
-            // Get the generated user ID (if your users table has auto-increment ID)
             int userId = 0;
             ResultSet generatedKeys = pstmt.getGeneratedKeys();
             if (generatedKeys.next()) {
                 userId = generatedKeys.getInt(1);
             }
 
-            // Insert into user_roles table (default role 'user')
             String insertRole = "INSERT INTO user_roles (username, role) VALUES (?, ?)";
             pstmt = conn.prepareStatement(insertRole);
             pstmt.setString(1, username);
             pstmt.setString(2, "user"); // Default role
             pstmt.executeUpdate();
 
-            // Commit transaction
             conn.commit();
 
-            // Create upload directory
             String uploadPath = getServletContext().getRealPath("/") + "uploads/" + username;
             new File(uploadPath).mkdirs();
 

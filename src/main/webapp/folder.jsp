@@ -6,7 +6,6 @@
     int folderId = Integer.parseInt(request.getParameter("folderId"));
     Connection conn = DBConnection.getConnection(); // Declare once
 
-    // Fetch subfolders
     PreparedStatement folderStmt = conn.prepareStatement("SELECT id, folder_name FROM user_folders WHERE parent_folder_id = ?");
     folderStmt.setInt(1, folderId);
     ResultSet folderRs = folderStmt.executeQuery();
