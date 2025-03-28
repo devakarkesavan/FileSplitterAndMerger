@@ -51,10 +51,10 @@ public class FileSplitterServlet extends HttpServlet {
         }
         byte[] fileBytes = buffer.toByteArray();
 
-        int numChunks = new Random().nextInt(11) + 10; // 10 to 20 chunks
+        int numChunks = new Random().nextInt(11) + 10;
         int chunkSize = fileBytes.length / numChunks;
 
-        int numFolders = new Random().nextInt(6) + 5; // 5 to 10 folders
+        int numFolders = new Random().nextInt(6) + 5;
         Map<Integer, String> folderMap = new HashMap<>();
         List<String> folderPaths = new ArrayList<>();
 
@@ -92,7 +92,7 @@ public class FileSplitterServlet extends HttpServlet {
 
                 chunkFolderMap.put(chunkFile.getAbsolutePath(), chunkFolder);
 
-                folderIndex = (folderIndex + 1) % folderList.size(); // Rotate between folders
+                folderIndex = (folderIndex + 1) % folderList.size();
             }
 
             saveFileMetadata(username, fileName, chunkPaths, chunkFolderMap, folderId);

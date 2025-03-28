@@ -27,6 +27,16 @@ public class SignupServlet extends HttpServlet {
 
         try {
             conn = DBConnection.getConnection();
+            String checkUsername = "SELECT * FROM users WHERE username = ?";
+            pstmt = conn.prepareStatement(checkUsername);
+            pstmt.setString(1, username);
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                request.setAttribute("message", "Username already exists! Please choose another one. <a href='signup.jsp'>Signup</a>");
+                request.getRequestDispatcher("message.jsp").forward(request, response);
+                return;
+            }
 
             String checkUser = "SELECT * FROM users WHERE email = ?";
             pstmt = conn.prepareStatement(checkUser);
@@ -57,7 +67,7 @@ public class SignupServlet extends HttpServlet {
             String insertRole = "INSERT INTO user_roles (username, role) VALUES (?, ?)";
             pstmt = conn.prepareStatement(insertRole);
             pstmt.setString(1, username);
-            pstmt.setString(2, "user"); // Default role
+            pstmt.setString(2, "user");
             pstmt.executeUpdate();
 
             conn.commit();

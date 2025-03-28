@@ -49,12 +49,15 @@
             font-weight: bold;
         }
     </style>
+    <script>
+    setTimeout(function(){ location.reload(); },1000 * 60 * 25);
+    </script>
 </head>
 <body>
     <div class="container">
         <h1>Login Page</h1>
         <form action="j_security_check" method="post">
-            Email: <input type="text" name="j_username" required><br>
+            Username: <input type="text" name="j_username" required><br>
             Password: <input type="password" name="j_password" required><br>
             <button type="submit">Login</button><br><br>
             <p>New to the page? <a href="signup.jsp">Sign Up</a></p>

@@ -4,7 +4,7 @@
 
 <%
     int folderId = Integer.parseInt(request.getParameter("folderId"));
-    Connection conn = DBConnection.getConnection(); // Declare once
+    Connection conn = DBConnection.getConnection();
 
     PreparedStatement folderStmt = conn.prepareStatement("SELECT id, folder_name FROM user_folders WHERE parent_folder_id = ?");
     folderStmt.setInt(1, folderId);
@@ -195,7 +195,7 @@
                             case "mp4": case "avi": case "mov": case "mkv": fileIcon = "icons/video.png"; break;
                             case "mp3": case "wav": fileIcon = "icons/audio.png"; break;
                             case "zip": case "rar": case "tar": case "7z": fileIcon = "icons/zip-folder.png"; break;
-                            case "txt": fileIcon = "icons/txt.png"; break;
+                            case "txt": fileIcon = "icons/text.png"; break;
                             case "html": case "css": case "js": case "java": case "py": case "cpp": case "c": fileIcon = "icons/code.png"; break;
                         default: fileIcon = "icons/file.png";
                                     }

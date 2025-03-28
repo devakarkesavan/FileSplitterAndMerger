@@ -1,12 +1,38 @@
 <%@ page import="java.sql.*, utils.DBConnection" %>
+
 <%
-    HttpSession sessionObj = request.getSession(false);
-    if (sessionObj == null || sessionObj.getAttribute("username") == null) {
-        response.sendRedirect("login.jsp");
-        return;
+    //if (session==null || request.getUserPrincipal() == null) {
+      //  response.sendRedirect("login.jsp");
+       // return;
+    //}
+
+
+
+    String username = request.getUserPrincipal().getName();
+    session.setAttribute("username",username);
+
+
+    int id = -1;
+    if (session.getAttribute("id") == null) {
+        try (Connection conn = DBConnection.getConnection()) {
+            String sql = "SELECT id FROM users WHERE username = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                id = rs.getInt("id");
+                session.setAttribute("userId", id);
+            }
+        } catch (Exception e) {
+            out.println("<p>Error: " + e.getMessage() + "</p>");
+        }
+    } else {
+        id = (int) session.getAttribute("id");
     }
-    Integer id = (Integer) sessionObj.getAttribute("id");
-    String username = (String) sessionObj.getAttribute("username");
+    session.setAttribute("id",id);
+
+
 %>
 
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
@@ -18,7 +44,6 @@
     <meta http-equiv="Expires" content="-1">
     <title>File Split & Merge</title>
     <style>
-        /* Global Styling */
         * {
             margin: 0;
             padding: 0;
@@ -72,7 +97,6 @@
             background: #ff6600;
         }
 
-        /* File Cards */
         .file-container {
             display: flex;
             flex-wrap: wrap;
@@ -158,8 +182,6 @@
             color: #333;
         }
 
-
-        /* Logout Link */
         .logout {
             position: absolute;
             top: 10px;
@@ -177,7 +199,7 @@
             background: darkred;
         }
         .modal {
-            display: none; /* Hide modal initially */
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
@@ -257,14 +279,14 @@ function createFolder() {
     let folderName = document.getElementById('folderName').value;
     if (!folderName) return alert("Enter a folder name!");
 
-    let parentFolderId = null; 
+    let parentFolderId = null;
 
     fetch('CreateFolderServlet', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
             folderName: folderName,
-            parentFolderId: parentFolderId 
+            parentFolderId: parentFolderId
         })
     }).then(response => {
         if (!response.ok) {
